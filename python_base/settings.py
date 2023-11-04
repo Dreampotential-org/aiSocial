@@ -74,26 +74,40 @@ WSGI_APPLICATION = 'python_base.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': BASE_DIR / 'db.sqlite3',
-#     }
-# }
-
 DATABASES = {
     'default': {
-        'ENGINE': 'djongo',
-        'NAME': 'mydattabase',  # Replace with your database name
-        'ENFORCE_SCHEMA': False,
-        'CLIENT': {
-            'host': 'localhost',
-            'port': 27017,
-            # 'username': '',  # If authentication is required
-            # 'password': '',  # If authentication is required
-            # 'authSource': 'admin',  # If authentication is required
-            # 'authMechanism': 'SCRAM-SHA-1',  # If authentication is required
-        }
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
+    }
+}
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'djongo',
+#         'NAME': 'mydattabase',  # Replace with your database name
+#         'ENFORCE_SCHEMA': False,
+#         'CLIENT': {
+#             'host': 'localhost',
+#             'port': 27017,
+#             # 'username': '',  # If authentication is required
+#             # 'password': '',  # If authentication is required
+#             # 'authSource': 'admin',  # If authentication is required
+#             # 'authMechanism': 'SCRAM-SHA-1',  # If authentication is required
+#         }
+#     }
+# }
+import os
+db_password = os.environ.get('password', 'EhB4bINnDFmzI0Bg')
+db_user = os.environ.get('db_user', 'postgres')
+db_host = os.environ.get('db_user', '130.127.133.189')
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'postgres',
+        'USER': db_user,
+        'HOST': 'localhost',
+        'PORT': '5776',
+        'PASSWORD':'password' ,
     }
 }
 

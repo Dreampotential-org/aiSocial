@@ -1,6 +1,10 @@
 from django.http import JsonResponse
 from db_connection import collection
+# from django.db import models
 
+# from twilio.twiml.voice_response import VoiceResponse
+
+# Function to get all data
 def get_all_data(request):
     if request.method == 'GET':
         try:
@@ -17,6 +21,7 @@ def get_all_data(request):
             }
             return JsonResponse(error_response, status=500)
 
+# Function to get all names
 def get_all_names(request):
     if request.method == 'GET':
         try:
@@ -33,6 +38,7 @@ def get_all_names(request):
             }
             return JsonResponse(error_response, status=500)
 
+# Function to get all states
 def get_all_states(request):
     if request.method == 'GET':
         try:
@@ -49,6 +55,7 @@ def get_all_states(request):
             }
             return JsonResponse(error_response, status=500)
 
+# Function to get all emails
 def get_all_emails(request):
     if request.method == 'GET':
         try:
@@ -65,6 +72,7 @@ def get_all_emails(request):
             }
             return JsonResponse(error_response, status=500)
 
+# Function to get all phones
 def get_all_phones(request):
     if request.method == 'GET':
         try:
@@ -81,6 +89,7 @@ def get_all_phones(request):
             }
             return JsonResponse(error_response, status=500)
 
+# Function to get all Solds
 def get_all_solds(request):
     if request.method == 'GET':
         try:
@@ -120,8 +129,10 @@ def create_user(request):
                 'Solds': Solds
             }
 
+            # Insert the new user into the MongoDB collection
             collection.insert_one(new_user)
 
+            # Prepare the response data
             response_data = {
                 'message': 'User added successfully'
             }
@@ -138,11 +149,14 @@ def create_user(request):
             }
             return JsonResponse(error_response, status=500)
 
+# twilio_app/views.py
 
 from django.http import JsonResponse
 from twilio.rest import Client
 from django.conf import settings
 from django.views.decorators.csrf import csrf_exempt
+import requests
+import time
 
 @csrf_exempt
 def make_calls(request):
@@ -154,27 +168,42 @@ def make_calls(request):
 
             client = Client(account_sid, auth_token)
 
-            phone_number=[     ]
-            first_call = client.calls.create(
-                to='+918143607031',
-                from_=twilio_number,
-                url='http://demo.twilio.com/docs/voice.xml'  
-            )
+            # Fetch phone numbers from the API
+            response = requests.get('http://127.0.0.1:8000/get-all-phones/')  # Replace with your API URL
+            all_phones = response.json()
 
-            second_call = None
+            call_data = []
 
-            if first_call.status != 'answered':
-                second_call = client.calls.create(
-                    # to='+18434259777',
-                    to='+917396097276',  
+            for phone_data in all_phones:
+                phone_number = '+91' + phone_data.get('phone')  # Adding the country code to the phone number
+
+                # Make a call for each phone number
+                call = client.calls.create(
+                    to=phone_number,
                     from_=twilio_number,
-                    url='http://demo.twilio.com/docs/voice.xml'  
+                    url='http://demo.twilio.com/docs/voice.xml'  # A TwiML URL or a TwiML Bin URL
                 )
 
+                time.sleep(15)  # Adjust the sleep time as needed
+
+                call = client.calls(call.sid).fetch()
+
+                if call.status == 'in-progress' and call.duration is None:
+                    call_status = 'not-answered'  # Call was not answered
+                else:
+                    call_status = call.status  # Call status is either 'completed' or 'in-progress'
+
+                call_info = {
+                    'phone_number': phone_number,
+                    'call_sid': call.sid,
+                    'call_status': call_status
+                }
+
+                call_data.append(call_info)
+
             response_data = {
-                'message': 'Call initiated successfully',
-                'first_call_sid': first_call.sid,
-                'second_call_sid': second_call.sid if second_call else None
+                'message': 'Calls initiated successfully',
+                'call_data': call_data
             }
 
             return JsonResponse(response_data, status=200)

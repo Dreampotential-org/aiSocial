@@ -1,0 +1,14 @@
+version: '3.3'
+
+services:
+    db:
+        image: postgis/postgis:15-3.4
+        ports:
+            - 5776:5432
+        volumes:
+            - /data/postgres-AI-social:/var/lib/postgresql/data
+        environment:
+            POSTGRES_DB: postgres
+            POSTGRES_USER: postgres
+            POSTGRES_PASSWORD: password
+
