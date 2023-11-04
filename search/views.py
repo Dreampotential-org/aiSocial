@@ -1,8 +1,6 @@
 from django.http import JsonResponse
 from db_connection import collection
-# from twilio.twiml.voice_response import VoiceResponse
 
-# Function to get all data
 def get_all_data(request):
     if request.method == 'GET':
         try:
@@ -19,7 +17,6 @@ def get_all_data(request):
             }
             return JsonResponse(error_response, status=500)
 
-# Function to get all names
 def get_all_names(request):
     if request.method == 'GET':
         try:
@@ -36,7 +33,6 @@ def get_all_names(request):
             }
             return JsonResponse(error_response, status=500)
 
-# Function to get all states
 def get_all_states(request):
     if request.method == 'GET':
         try:
@@ -53,7 +49,6 @@ def get_all_states(request):
             }
             return JsonResponse(error_response, status=500)
 
-# Function to get all emails
 def get_all_emails(request):
     if request.method == 'GET':
         try:
@@ -70,7 +65,6 @@ def get_all_emails(request):
             }
             return JsonResponse(error_response, status=500)
 
-# Function to get all phones
 def get_all_phones(request):
     if request.method == 'GET':
         try:
@@ -87,7 +81,6 @@ def get_all_phones(request):
             }
             return JsonResponse(error_response, status=500)
 
-# Function to get all Solds
 def get_all_solds(request):
     if request.method == 'GET':
         try:
@@ -127,10 +120,8 @@ def create_user(request):
                 'Solds': Solds
             }
 
-            # Insert the new user into the MongoDB collection
             collection.insert_one(new_user)
 
-            # Prepare the response data
             response_data = {
                 'message': 'User added successfully'
             }
@@ -147,7 +138,6 @@ def create_user(request):
             }
             return JsonResponse(error_response, status=500)
 
-# twilio_app/views.py
 
 from django.http import JsonResponse
 from twilio.rest import Client
@@ -164,18 +154,15 @@ def make_calls(request):
 
             client = Client(account_sid, auth_token)
 
-            # Call the first number
             phone_number=[     ]
             first_call = client.calls.create(
                 to='+918143607031',
                 from_=twilio_number,
-                url='http://demo.twilio.com/docs/voice.xml'  # A TwiML URL or a TwiML Bin URL for the first call
+                url='http://demo.twilio.com/docs/voice.xml'  
             )
 
-            # Initialize the second call variable
             second_call = None
 
-            # If the first call is not answered, forward the call to the second number
             if first_call.status != 'answered':
                 second_call = client.calls.create(
                     # to='+18434259777',
