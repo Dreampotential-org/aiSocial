@@ -286,3 +286,47 @@ def handle_incoming_call(request):
 @csrf_exempt
 def twilio_call_status(request):
     return JsonResponse({"success":True})
+
+
+from django.conf import settings
+from django.http import JsonResponse
+from twilio.rest import Client
+@csrf_exempt
+def send_message_view(request):
+    if request.method == 'POST':
+        try:
+            # Twilio client setup
+            account_sid = settings.TWILIO['TWILIO_ACCOUNT_SID']
+            auth_token = settings.TWILIO['TWILIO_AUTH_TOKEN']
+            twilio_number = settings.TWILIO['TWILIO_PHONE_NUMBER']
+            client = Client(account_sid, auth_token)
+
+            # Phone number to send the message to
+            to_number = '+18434259777'  # Replace with the desired phone number
+
+            # Send the message using Twilio
+            message = client.messages.create(
+                body='nadeeem here ',  # Replace with your desired message
+                from_=twilio_number,
+                to=to_number
+            )
+
+            response_data = {
+                'message': 'Message sent successfully',
+                'message_sid': message.sid
+            }
+
+            return JsonResponse(response_data, status=200)
+
+        except Exception as e:
+            error_response = {
+                "error": {
+                    "type": "TWILIO-ERROR",
+                    "code": "500",
+                    "message": "Twilio Error - " + str(e)
+                }
+            }
+            return JsonResponse(error_response, status=500)
+
+    else:
+        return JsonResponse({'error': 'Invalid request method'}, status=405)

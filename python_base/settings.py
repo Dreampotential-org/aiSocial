@@ -129,9 +129,14 @@ AUTH_PASSWORD_VALIDATORS = [
 
 TWILIO = {
     'TWILIO_ACCOUNT_SID': 'AC27cc6f7b53abe7c21f0713c7872eba2e',
-    'TWILIO_AUTH_TOKEN': '8b3ddf7308d85344029f321df120ec2c',
+    'TWILIO_AUTH_TOKEN': '2e64c50eb73fe47a471c477a5187e4f3',
     'TWILIO_PHONE_NUMBER': '(603) 769-8421',
 }
+# TWILIO = {
+#     'TWILIO_ACCOUNT_SID': 'AC27cc6f7b53abe7c21f0713c7872eba2e',
+#     'TWILIO_AUTH_TOKEN': '2e64c50eb73fe47a471c477a5187e4f3',
+#     'TWILIO_NUMBER': '(603) 769-8421',
+# }
 
 # Internationalization
 # https://docs.djangoproject.com/en/4.1/topics/i18n/
