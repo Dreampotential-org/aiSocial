@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-!agm%g_9+)2#s)m4d^9!-5=o4o7ona1*y(qr+s15*@io4bg(um
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['localhost','127.0.0.1', 'e2fe-27-131-134-73.ngrok-free.app']  # Add your ngrok subdomain here as well
 
 
 # Application definition
@@ -48,6 +48,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'search.logging_middleware.RequestLoggingMiddleware',  # Your custom middleware
 ]
 
 ROOT_URLCONF = 'python_base.urls'
@@ -128,7 +129,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 TWILIO = {
     'TWILIO_ACCOUNT_SID': 'AC27cc6f7b53abe7c21f0713c7872eba2e',
-    'TWILIO_AUTH_TOKEN': '2e64c50eb73fe47a471c477a5187e4f3',
+    'TWILIO_AUTH_TOKEN': '8b3ddf7308d85344029f321df120ec2c',
     'TWILIO_PHONE_NUMBER': '(603) 769-8421',
 }
 
@@ -153,3 +154,25 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+import os
+# ALLOWED_HOSTS = ['localhost','127.0.0.1', 'e2fe-27-131-134-73.ngrok-free.app']  # Add your ngrok subdomain here as well
+LOG_FILE = os.path.join(BASE_DIR, 'logs', 'logfile.log')
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'file': {
+            'level': 'INFO',
+            'class': 'logging.FileHandler',
+            'filename': 'logfile.log',
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['file'],
+            'level': 'INFO',
+            'propagate': True,
+        },
+    },
+}

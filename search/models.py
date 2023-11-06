@@ -1,16 +1,16 @@
 # search/models.py
 
 from django.db import models
-# from db_connection import collection
+from db_connection import collection
 
 class Contact(models.Model):
     name = models.CharField(max_length=100)
     state = models.CharField(max_length=100)
     email = models.EmailField()
-    phone = models.CharField(max_length=20)
-    sold_sands = models.CharField(max_length=100    )
-    notes = models.TextField(blank=True, null=True)
+    phone = models.CharField(max_length=100)
     sold_sands = models.CharField(max_length=100)
+    notes = models.TextField(blank=True, null=True)
+    # sold_sands = models.CharField(max_length=100)
     last_call = models.DateField(blank=True, null=True)
 
 

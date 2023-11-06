@@ -1,8 +1,7 @@
 from django.http import JsonResponse
 from db_connection import collection
-# from django.db import models
-
 # from twilio.twiml.voice_response import VoiceResponse
+from django.http import HttpResponse
 
 # Function to get all data
 def get_all_data(request):
@@ -148,9 +147,40 @@ def create_user(request):
                 }
             }
             return JsonResponse(error_response, status=500)
+from bson import ObjectId
 
 # twilio_app/views.py
+@csrf_exempt
+def delete_data(request, data_id):
+    if request.method == 'DELETE':
+        try:
+            # Delete data based on the provided ID
+            delete_result = collection.delete_one({'_id': ObjectId(data_id)})
 
+            if delete_result.deleted_count == 1:
+                response_data = {
+                    'message': f'Data with ID {data_id} deleted successfully'
+                }
+                return JsonResponse(response_data, status=200)
+            else:
+                error_response = {
+                    "error": {
+                        "type": "DATA-NOT-FOUND",
+                        "code": "404",
+                        "message": f"Data with ID {data_id} not found"
+                    }
+                }
+                return JsonResponse(error_response, status=404)
+
+        except Exception as e:
+            error_response = {
+                "error": {
+                    "type": "SERVER-ERROR",
+                    "code": "500",
+                    "message": "Internal Server Error - " + str(e)
+                }
+            }
+            return JsonResponse(error_response, status=500)
 from django.http import JsonResponse
 from twilio.rest import Client
 from django.conf import settings
@@ -162,10 +192,10 @@ import time
 def make_calls(request):
     if request.method == 'POST':
         try:
+            # Twilio client setup
             account_sid = settings.TWILIO['TWILIO_ACCOUNT_SID']
             auth_token = settings.TWILIO['TWILIO_AUTH_TOKEN']
             twilio_number = settings.TWILIO['TWILIO_PHONE_NUMBER']
-
             client = Client(account_sid, auth_token)
 
             # Fetch phone numbers from the API
@@ -175,7 +205,7 @@ def make_calls(request):
             call_data = []
 
             for phone_data in all_phones:
-                phone_number = '+91' + phone_data.get('phone')  # Adding the country code to the phone number
+                phone_number = '+91' + phone_data.get('phone')
 
                 # Make a call for each phone number
                 call = client.calls.create(
@@ -183,20 +213,13 @@ def make_calls(request):
                     from_=twilio_number,
                     url='http://demo.twilio.com/docs/voice.xml'  # A TwiML URL or a TwiML Bin URL
                 )
-
-                time.sleep(15)  # Adjust the sleep time as needed
-
-                call = client.calls(call.sid).fetch()
-
-                if call.status == 'in-progress' and call.duration is None:
-                    call_status = 'not-answered'  # Call was not answered
-                else:
-                    call_status = call.status  # Call status is either 'completed' or 'in-progress'
+                print(call.__dict__)  # Print the call object to inspect its attributes
 
                 call_info = {
                     'phone_number': phone_number,
                     'call_sid': call.sid,
-                    'call_status': call_status
+                    'start_time': call.start_time,  # Logging the start time
+                    'end_time': call.end_time,  # Logging the end time
                 }
 
                 call_data.append(call_info)
@@ -217,3 +240,49 @@ def make_calls(request):
                 }
             }
             return JsonResponse(error_response, status=500)
+    else:
+        return HttpResponse(status=405)
+
+# Webhook endpoint to handle call status updates
+@csrf_exempt
+def webhook_endpoint(request):
+    if request.method == 'POST':
+        payload = json.loads(request.body)
+        print("Received webhook data:")
+        print(payload)
+
+        call_sid = payload.get('CallSid')
+        call_status = payload.get('CallStatus')
+        call_duration = payload.get('CallDuration')
+
+        # Store or log the call status and duration here for later use
+
+        return HttpResponse(status=200)
+    else:
+        return HttpResponse(status=405)
+# from twilio.rest import Client
+
+from twilio.twiml.voice_response import VoiceResponse, Gather, Dial, Pause, Number,Record,Say
+from twilio.twiml.voice_response import VoiceResponse
+
+SERVER_URL = 'https://py-api.dreampotential.org'
+
+@csrf_exempt
+def handle_incoming_call(request):
+    response = VoiceResponse()
+    dial = Dial(
+        record='record-from-ringing-dual',
+        timeout="1000",
+    )
+    dial.number('+18434259777')
+    response.append(dial)
+    response.say("Hi, I can't come to the phone right now, please leave a message after the beep",voice="alice")
+    response.record(
+        recording_status_callback=SERVER_URL + '/voip/api_voip/recording_status_callback',
+        recording_status_callback_event='completed')
+    response.hangup()
+    return HttpResponse(response)
+
+@csrf_exempt
+def twilio_call_status(request):
+    return JsonResponse({"success":True})
