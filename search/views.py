@@ -269,6 +269,7 @@ SERVER_URL = 'https://py-api.dreampotential.org'
 
 @csrf_exempt
 def handle_incoming_call(request):
+    print("Handle incoming call has been called")
     response = VoiceResponse()
     dial = Dial(
         record='record-from-ringing-dual',
@@ -283,8 +284,22 @@ def handle_incoming_call(request):
     response.hangup()
     return HttpResponse(response)
 
+
+@csrf_exempt
+def recording_status_callback(request):
+    print("Handle recording status callback")
+    data = request.POST
+    print(data)
+    return HttpResponse("")
+
+
+
 @csrf_exempt
 def twilio_call_status(request):
+    print("twilio call status called %s" % request.method)
+    data = request.POST
+    print(data)
+
     return JsonResponse({"success":True})
 
 

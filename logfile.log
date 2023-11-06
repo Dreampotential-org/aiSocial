@@ -107,3 +107,4 @@ Internal Server Error: /send-message/
 "POST /send-message/ HTTP/1.1" 500 558
 C:\Users\shaik\Desktop\pythonbase\python_base\python_base\settings.py changed, reloading.
 Watching for file changes with StatReloader
+C:\Users\shaik\Desktop\pythonbase\python_base\search\urls.py changed, reloading.

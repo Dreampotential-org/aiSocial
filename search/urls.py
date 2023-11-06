@@ -17,7 +17,7 @@ urlpatterns = [
     path('webhook-endpoint/', views.webhook_endpoint, name='webhook_endpoint'),
     # path('api_voip/handle_incoming_call', views.handle_incoming_call),
 
-    path('/voip/api_voip/call_status', views.twilio_call_status),
+    path('voip/api_voip/call_status', views.twilio_call_status),
 
     path('make-calls/', views.make_calls, name='make_calls'),
     # path('twiml/', views.twiml, name='twiml'),  # Add this line to create a URL for the twiml view

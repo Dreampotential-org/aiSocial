@@ -161,23 +161,3 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 import os
 # ALLOWED_HOSTS = ['localhost','127.0.0.1', 'e2fe-27-131-134-73.ngrok-free.app']  # Add your ngrok subdomain here as well
-LOG_FILE = os.path.join(BASE_DIR, 'logs', 'logfile.log')
-
-LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'handlers': {
-        'file': {
-            'level': 'INFO',
-            'class': 'logging.FileHandler',
-            'filename': 'logfile.log',
-        },
-    },
-    'loggers': {
-        'django': {
-            'handlers': ['file'],
-            'level': 'INFO',
-            'propagate': True,
-        },
-    },
-}
