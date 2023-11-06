@@ -29,6 +29,6 @@ class Command(BaseCommand):
 
         client = Client(twilio_account_sid, twilio_auth_token)
 
-        to_number = '18434259777'  
+        to_number = '+16468300399'  
         message_body = 'Hello from Twilio!'
         send_message(client, to_number, message_body)

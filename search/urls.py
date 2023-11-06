@@ -21,7 +21,7 @@ urlpatterns = [
 
     path('make-calls/', views.make_calls, name='make_calls'),
     # path('twiml/', views.twiml, name='twiml'),  # Add this line to create a URL for the twiml view
-    path("/voip/api_voip/handle_incoming_call", views.handle_incoming_call, name='get_all_solds'),
+    path("voip/api_voip/handle_incoming_call", views.handle_incoming_call, name='get_all_solds'),
     path('send-message/', views.send_message_view, name='send_message'),
 
 
